@@ -1,6 +1,3 @@
 OpenCVLibByHehe
 ===============
-I'm a student of NanKaiUniversity in China.
-I'm studying OpenCV these days~
-These are some small functions create by myself to help my work on OpenCV
-
+这是我建立的一个简单OpenCV应用函数库，用于帮助和熟悉OpenCV的开发。
