@@ -62,12 +62,14 @@ CvCapture * cvxCreateCameraCaptureAuto(){
 	int camera_index;
 	IplImage * testFrame;
 	for(camera_index=2;camera_index>=0;camera_index--){
+		//ID递减，一般ID=0是笔记本自带的摄像头，这个摄像头是最后考虑的。
 		std::cout<<"Read Camera ["<<camera_index<<"]";
 		CvCapture * capture=cvCreateCameraCapture(camera_index);
 		read_retry=0;
 		do{
 			std::cout<<"...";
 			if(read_retry>10){
+				//尝试10次读取摄像头
 				std::cout<<"Failed.\n";
 				break;
 			}else{
@@ -77,10 +79,12 @@ CvCapture * cvxCreateCameraCaptureAuto(){
 			}
 		}while(!testFrame);
 		if(testFrame){
+			//直到获取到图像信息，则确认使用该摄像头
 			std::cout<<"Successed!\n";
 			return capture;
 		}
 	}
+	//如果没有摄像头，返回NULL
 	return NULL;
 }
 
@@ -88,18 +92,22 @@ CvCapture * cvxCreateCameraCaptureAuto(){
 void cvxArrangeWindows(int number_of_windows,char ** windows_name_list,CvSize & screenSize,CvSize & gridSize=cvSize(0,0)){
 	int x,y,i=0;
 	if(gridSize.width==0){
+		//如果没有指定排布方式，则按如下方法自动获取每行和每列的窗口数。
 		y=floor(sqrt((float)number_of_windows));
 		x=ceil((float)number_of_windows/y);
 		gridSize=cvSize(x,y);
 	}
+	//计算每个窗口的宽和高
 	int gridWidth=(screenSize.width)/(gridSize.width);
 	int gridHeight=(screenSize.height)/(gridSize.height);
 	for(y=0;y<gridSize.height;y++){
 		for(x=0;x<gridSize.width;x++){
+			//创建，移动和调整窗口大小。
 			cvNamedWindow(windows_name_list[i],CV_WINDOW_NORMAL);
 			cvMoveWindow(windows_name_list[i],x*gridWidth,y*gridHeight);
 			cvResizeWindow(windows_name_list[i],gridWidth,gridHeight);
 			i++;
+			//直到完成所有窗口
 			if(i>=number_of_windows)return;
 		}
 	}
