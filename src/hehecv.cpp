@@ -112,3 +112,55 @@ void cvxArrangeWindows(int number_of_windows,char ** windows_name_list,CvSize & 
 		}
 	}
 }
+
+void cvxCutImageByMouse_MouseCallback(int event,int x,int y,int flags,void * param){
+	int * param_int=(int *)param;
+	switch(event){
+		case CV_EVENT_LBUTTONDOWN:{
+			param_int[0]=CV_EVENT_LBUTTONDOWN;
+			param_int[1]=x;
+			param_int[2]=y;
+		};break;
+		case CV_EVENT_LBUTTONUP:{
+			param_int[0]=CV_EVENT_LBUTTONUP;
+			param_int[3]=x;
+			param_int[4]=y;
+		};break;
+		default:param_int[0]=0;break;
+	}
+	return;
+}
+IplImage * cvxCutImageByMouse(IplImage * src){
+	cvNamedWindow("ImageCutter",CV_WINDOW_NORMAL);
+	cvShowImage("ImageCutter",src);
+	int callback_param[5]={0,0,0,0,0};
+	int x1,y1,x2,y2;
+	cvSetMouseCallback("ImageCutter",cvxCutImageByMouse_MouseCallback,callback_param);
+    cvWaitKey(0);
+	x1=callback_param[1];
+	y1=callback_param[2];
+	x2=callback_param[3];
+ 	y2=callback_param[4];
+	if(x1>x2){
+		int temp=x1;
+		x1=x2;
+		x2=temp;
+	}
+	if(y1>y2){
+		int temp=y1;
+		y1=y2;
+		y2=temp;
+	}
+	if(x1<0)x1=0;
+	if(y1<0)y1=0;
+	if(x2>=src->width)x2=src->width-1;
+	if(y2>=src->height)y2=src->height-1;
+	CvMat * sub_mat=cvCreateMat(y2-y1,x2-x1,src->depth);
+	IplImage * result_img=cvCreateImage(cvSize(x2-x1,y2-y1),src->depth,src->nChannels);
+	CvRect rect=cvRect(x1,y1,x2-x1,y2-y1);
+	cvGetSubRect(src,sub_mat,rect);
+	cvCopy(sub_mat,result_img);
+	cvReleaseMat(&sub_mat);
+	cvDestroyWindow("ImageCutter");
+	return result_img;
+}
