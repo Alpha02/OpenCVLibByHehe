@@ -113,6 +113,14 @@ void cvxArrangeWindows(int number_of_windows,char ** windows_name_list,CvSize & 
 	}
 }
 
+IplImage * cvxGetSubImage(IplImage * src,CvRect rect){
+	CvMat * sub_mat=cvCreateMat(rect.height,rect.width,src->depth);
+	IplImage * result_img=cvCreateImage(cvSize(rect.width,rect.height),src->depth,src->nChannels);
+	cvGetSubRect(src,sub_mat,rect);
+	cvCopy(sub_mat,result_img);
+	cvReleaseMat(&sub_mat);
+	return result_img;
+}
 void cvxCutImageByMouse_MouseCallback(int event,int x,int y,int flags,void * param){
 	int * param_int=(int *)param;
 	switch(event){
@@ -130,12 +138,12 @@ void cvxCutImageByMouse_MouseCallback(int event,int x,int y,int flags,void * par
 	}
 	return;
 }
-IplImage * cvxCutImageByMouse(IplImage * src){
-	cvNamedWindow("ImageCutter",CV_WINDOW_NORMAL);
-	cvShowImage("ImageCutter",src);
+IplImage * cvxCutImageByMouse(IplImage * src,char * window_name="ImageCutter"){
+	cvNamedWindow(window_name,CV_WINDOW_NORMAL);
+	cvShowImage(window_name,src);
 	int callback_param[5]={0,0,0,0,0};
 	int x1,y1,x2,y2;
-	cvSetMouseCallback("ImageCutter",cvxCutImageByMouse_MouseCallback,callback_param);
+	cvSetMouseCallback(window_name,cvxCutImageByMouse_MouseCallback,callback_param);
     cvWaitKey(0);
 	x1=callback_param[1];
 	y1=callback_param[2];
@@ -155,12 +163,6 @@ IplImage * cvxCutImageByMouse(IplImage * src){
 	if(y1<0)y1=0;
 	if(x2>=src->width)x2=src->width-1;
 	if(y2>=src->height)y2=src->height-1;
-	CvMat * sub_mat=cvCreateMat(y2-y1,x2-x1,src->depth);
-	IplImage * result_img=cvCreateImage(cvSize(x2-x1,y2-y1),src->depth,src->nChannels);
-	CvRect rect=cvRect(x1,y1,x2-x1,y2-y1);
-	cvGetSubRect(src,sub_mat,rect);
-	cvCopy(sub_mat,result_img);
-	cvReleaseMat(&sub_mat);
-	cvDestroyWindow("ImageCutter");
+	IplImage * result_img=cvxGetSubImage(src,cvRect(x1,y1,x2-x1,y2-y1));
 	return result_img;
 }

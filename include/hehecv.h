@@ -14,9 +14,9 @@ extern CvCapture * cvxCreateCameraCaptureAuto();
 
 /*This Function Create multiple Windows,then Move and reshape them to fit the screen*/
 extern void cvxArrangeWindows(int number_of_windows,char ** windows_name_list,CvSize &screenSize,CvSize &gridSize=cvSize(0,0));
-
+extern IplImage * cvxGetSubImage(IplImage * src,CvRect rect);
 /*This Function was called by Function:cvxCutImageByMouse*/
 extern void cvxCutImageByMouse_MouseCallback(int event,int x,int y,int flags,void * param);
 /*This Function create a Window to cut the image by mouse*/
-extern IplImage * cvxCutImageByMouse(IplImage * src);
+extern IplImage * cvxCutImageByMouse(IplImage * src,char * window_name="ImageCutter");
 
