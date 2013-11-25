@@ -140,7 +140,7 @@ void cvxCutImageByMouse_MouseCallback(int event,int x,int y,int flags,void * par
 	return;
 }
 IplImage * cvxCutImageByMouse(IplImage * src,char * window_name){
-	cvNamedWindow(window_name,CV_WINDOW_NORMAL);
+	cvNamedWindow(window_name,CV_WINDOW_AUTOSIZE);
 	cvShowImage(window_name,src);
 	int callback_param[5]={0,0,0,0,0};
 	int x1,y1,x2,y2;
