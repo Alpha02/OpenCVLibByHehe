@@ -1,5 +1,6 @@
 #include <cv.h>
 #include <highgui.h>
+#include "hehecv.h"
 //这个函数用于绘制均等间距的直方图，一维或二维。
 void cvxShowHistogram(char * windows_name,CvHistogram * hist){
 	float v_min,v_max;
@@ -49,7 +50,7 @@ void cvxShowHistogram(char * windows_name,CvHistogram * hist){
 
 /*This Function create an IplImage similar to another IplImage,
 if neccessary,you can change its depth and Channels type to new ones;*/
-IplImage * cvxCreateImageSimilar(IplImage * src,int nChannels_new=-1,int depth_new=-1){
+IplImage * cvxCreateImageSimilar(IplImage * src,int nChannels_new,int depth_new){
 	if(depth_new==-1)depth_new=src->depth;
 	if(nChannels_new==-1)nChannels_new=src->nChannels;
 	IplImage * new_img=cvCreateImage(cvSize(src->width,src->height),depth_new,nChannels_new);
@@ -89,7 +90,7 @@ CvCapture * cvxCreateCameraCaptureAuto(){
 }
 
 /*This Function Create multiple Windows,then Move and reshape them to fit the screen*/
-void cvxArrangeWindows(int number_of_windows,char ** windows_name_list,CvSize & screenSize,CvSize & gridSize=cvSize(0,0)){
+void cvxArrangeWindows(int number_of_windows,char ** windows_name_list,CvSize & screenSize,CvSize & gridSize){
 	int x,y,i=0;
 	if(gridSize.width==0){
 		//如果没有指定排布方式，则按如下方法自动获取每行和每列的窗口数。
@@ -138,7 +139,7 @@ void cvxCutImageByMouse_MouseCallback(int event,int x,int y,int flags,void * par
 	}
 	return;
 }
-IplImage * cvxCutImageByMouse(IplImage * src,char * window_name="ImageCutter"){
+IplImage * cvxCutImageByMouse(IplImage * src,char * window_name){
 	cvNamedWindow(window_name,CV_WINDOW_NORMAL);
 	cvShowImage(window_name,src);
 	int callback_param[5]={0,0,0,0,0};
